@@ -1,3 +1,5 @@
+import copy
+
 def check_win(board, player):
     # Check for horizontal wins
     for i in range(3):
@@ -18,14 +20,17 @@ def check_win(board, player):
     # No win
     return False
 
+def check_draw(board):
+    if all(all(cell != ' ' for cell in row) for row in board):
+        return True
 
 def minimax(board, depth, maximizing_player):
     # Check for terminal states
     if check_win(board, 'X'):
-        return -10
-    if check_win(board, 'O'):
         return 10
-    if all(all(cell != ' ' for cell in row) for row in board):
+    if check_win(board, 'O'):
+        return -10
+    if check_draw(board):
         return 0
 
     # Evaluate the current state for the maximizing player
@@ -86,8 +91,6 @@ def play_game():
 
     current_player = 'X'
     while True:
-        # Display the board
-        print_board(board)
 
         # Make a move
         if current_player == 'X':
@@ -103,9 +106,17 @@ def play_game():
         # Make the move
         board[move[0]][move[1]] = current_player
 
+        # Display the board after moves
+        print_board(board)
+
         # Check for win
         if check_win(board, current_player):
             print(f"Player {current_player} wins!")
+            break
+
+        # Check for draw
+        if check_draw(board):
+            print("It's a draw.")
             break
 
         # Switch players
